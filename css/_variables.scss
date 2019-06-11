@@ -1,0 +1,54 @@
+$header-height: 120px;
+
+$wide-desktop: 1200px;
+$desktop: 992px;
+$tablet: 768px;
+$mobile: 480px;
+
+$colors: (
+  sunset-orange: #fd533d,
+  neon-carrot: #fe9a36,
+  gorse: #ffed4f,
+  martinique: #2b304e,
+  casal: #2e696d,
+  mountain-meadow: #24c17b,
+  persian-blue: #3519c2,
+  royal-blue: #4959ee,
+  stone-wood: #9d8c7c,
+  cascade: #93aaad,
+  lola: #d9d1d9,
+  peach-ice: #f3d4d4,
+  white-rock: #ede6d8
+);
+
+$white: #fff;
+$sunset-orange: map-get($colors, sunset-orange);
+$neon-carrot: map-get($colors, neon-carrot);
+$gorse : map-get($colors, gorse);
+$martinique: map-get($colors, martinique);
+$casal: map-get($colors, casal);
+$mountain-meadow: map-get($colors, mountain-meadow);
+$persian-blue: map-get($colors, persian-blue);
+$royal-blue: map-get($colors, royal-blue);
+$stone-wood: map-get($colors, stone-wood);
+$cascade: map-get($colors, cascade);
+$lola: map-get($colors, lola);
+$peach-ice: map-get($colors, peach-ice);
+$white-rock: map-get($colors, white-rock);
+
+$color-index: (
+  0:  $white,
+  1:  $sunset-orange,
+  2:  $neon-carrot,
+  3:  $gorse,
+  4:  $martinique,
+  5:  $casal,
+  6:  $mountain-meadow,
+  7:  $persian-blue,
+  8:  $royal-blue,
+  9:  $stone-wood,
+  10: $cascade,
+  11: $lola,
+  12: $peach-ice,
+  13: $white-rock
+);
