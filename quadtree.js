@@ -33,27 +33,31 @@ class Rectangle {
 }
 
 class QuadTree {
-  constructor(boundary, n) {
+  constructor(boundary, n, zoom, svg) {
     this.boundary = boundary;
     this.capacity = n;
     this.points   = [];
     this.divided  = false;
+    this.zoom = zoom;
+    this.svg = svg;
   }
 
   subdivide() {
     let x  = this.boundary.x,
         y  = this.boundary.y,
         w  = this.boundary.w,
-        h  = this.boundary.h,
-        ne = new Rectangle(x + w / 2, y - h / 2, w / 2, h / 2),
-        nw = new Rectangle(x - w / 2, y - h / 2, w / 2, h / 2),
-        se = new Rectangle(x + w / 2, y + h / 2, w / 2, h / 2),
-        sw = new Rectangle(x - w / 2, y + h / 2, w / 2, h / 2);
+        h  = this.boundary.h;
 
-    this.northeast = new QuadTree(ne, this.capacity);
-    this.northwest = new QuadTree(nw, this.capacity);
-    this.southeast = new QuadTree(se, this.capacity);
-    this.southwest = new QuadTree(sw, this.capacity);
+    let ne = new Rectangle(Math.round(x + w / 2), Math.round(y - h / 2), Math.round(w / 2), Math.round(h / 2)),
+        nw = new Rectangle(Math.round(x - w / 2), Math.round(y - h / 2), Math.round(w / 2), Math.round(h / 2)),
+        se = new Rectangle(Math.round(x + w / 2), Math.round(y + h / 2), Math.round(w / 2), Math.round(h / 2)),
+        sw = new Rectangle(Math.round(x - w / 2), Math.round(y + h / 2), Math.round(w / 2), Math.round(h / 2));
+
+    this.zoom = this.zoom + 1;
+    this.northeast = new QuadTree(ne, this.capacity, this.zoom);
+    this.northwest = new QuadTree(nw, this.capacity, this.zoom);
+    this.southeast = new QuadTree(se, this.capacity, this.zoom);
+    this.southwest = new QuadTree(sw, this.capacity, this.zoom);
     this.divided   = true;
   }
 
@@ -108,7 +112,8 @@ class QuadTree {
     noFill();
     strokeWeight(lineThickness);
     rectMode(CENTER);
-    rect( this.boundary.x, this.boundary.y, this.boundary.w * 2, this.boundary.h * 2 );
+    rect( this.boundary.x, this.boundary.y, this.boundary.w * 2 - 0.5, this.boundary.h * 2 - 0.5);
+
     for (let p of this.points) {
       strokeWeight(pointThickness);
       point(p.x, p.y);
