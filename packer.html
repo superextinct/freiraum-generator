@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branding Machine</title>
+    <link rel="stylesheet" href="css/at.css">
+    <link rel="stylesheet" href="css/app.css">
+    <style>
+       #app {
+         display: flex;
+         height: 100%;
+         justify-content: center;
+         align-items: center;
+       }
+     </style>
+  </head>
+  <body>
+    <div id="app">
+      <template id="template">
+        <header
+          class="page-header"
+          :class="[
+            collapse ? 'collapse' : ''
+          ]"
+          id="J-page-header">
+          <div class="nav-container">
+            <div class="nav-left">
+              <ul class="navbar">
+                <li class="logo">Branding Machine</li>
+                <li></li>
+                <li>
+                  <div class="row">
+                    <label for="format-select" class="col-4">Format</label>
+                    <div class="col-20">
+                      <at-select id="format-select" v-model="formatselect" multiple placeholder="bitte auswählen">
+                        <at-option value="a8">A8</at-option>
+                        <at-option value="a7">A7</at-option>
+                        <at-option value="a6">A6</at-option>
+                        <at-option value="a5">A5</at-option>
+                        <at-option value="a4">A4</at-option>
+                        <at-option value="a3">A3</at-option>
+                        <at-option value="a2">A2</at-option>
+                      </at-select>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="row">
+                    <label for="color-select" class="col-8">Farbe</label>
+                    <div class="col-10">
+                      <at-select id="color-select" v-model="colorselect" placeholder="bitte auswählen" @on-change="updateCanvasColor" style="width:120px;">
+                        <at-option value="0" data-color="white">Weiß</at-option>
+                        <at-option value="1" data-color="sunset-orange">Sunset Orange</at-option>
+                        <at-option value="2" data-color="neon-carrot">Neon Carrot</at-option>
+                        <at-option value="3" data-color="gorse">Gorse</at-option>
+                        <at-option value="4" data-color="martinique">Martinique</at-option>
+                        <at-option value="5" data-color="casal">Casal</at-option>
+                        <at-option value="6" data-color="mountain-meadow">Mountain Meadow</at-option>
+                        <at-option value="7" data-color="persian-blue">Persian Blue</at-option>
+                        <at-option value="8" data-color="royal-blue">Royal Blue</at-option>
+                      </at-select>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="row">
+                    <label for="block-select" class="col-10">Blöcke</label>
+                    <div class="col-10">
+                      <at-select id="block-select" v-model="blockselect" placeholder="bitte auswählen" @on-change="generateGrid" style="width: 100px;">
+                        <at-option value="high">Viele</at-option>
+                        <at-option value="medium">Mittel</at-option>
+                        <at-option value="low">Wenig</at-option>
+                      </at-select>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <at-button type="primary" icon="icon-refresh-ccw" @click="generateGrid">Raster generieren</at-button>
+                </li>
+              </ul>
+              <i class="icon icon-menu nav-icon" @click="toggleMenu"></i>
+            </div>
+            <div class="nav-right">
+              <ul class="navbar">
+                <li>
+                  <at-button-group>
+                    <at-button icon="icon-file"></at-button>
+                    <at-button icon="icon-download"></at-button>
+                  </at-button-group>
+                </li>
+                <li>
+                  <at-button icon="icon-settings" @click="settingsModal=true"></at-button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+      </template>
+
+      <at-menu mode="vertical">
+        <at-menu-item name="1"><i class="icon icon-layers"></i>Elemente</at-menu-item>
+        <at-menu-item>
+
+               <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
+                 <h1>Upload images</h1>
+                 <div class="dropbox">
+                   <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
+                     accept="image/*" class="input-file">
+                     <p v-if="isInitial">
+                       Drag your file(s) here to begin<br> or click to browse
+                     </p>
+                     <p v-if="isSaving">
+                       Uploading {{ fileCount }} files...
+                     </p>
+                 </div>
+               </form>
+        </at-menu-item>
+      </at-menu>
+
+      <div id="artboards" v-bind:data-color="colorselect">
+
+        <canvas id="format" resize></canvas>
+        <div id="textfields"></div>
+        <canvas id="fabric" resize></canvas>
+      </div>
+
+      <at-modal v-model="settingsModal" title="Einstellungen" @on-confirm="generateGrid" cancel-text="Abbrechen">
+        <div class="row">
+          <div class="col-8">
+            <p>Sortierung</p>
+          </div>
+          <div class="col-16">
+            <at-select v-model="sorting" placeholder="bitte auswählen" style="width:100%;">
+              <at-option value="random">Zufällig</at-option>
+              <at-option value="w">Breite</at-option>
+              <at-option value="h">Höhe</at-option>
+              <at-option value="a">Fläche</at-option>
+              <at-option value="max">Maximum</at-option>
+              <at-option value="min">Minimum</at-option>
+              <at-option value="width">Breite (msort)</at-option>
+              <at-option value="height">Höhe (msort)</at-option>
+              <at-option value="area">Fläche (msort)</at-option>
+            </at-select>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-8">
+            <p>Block-Sequenz</p>
+          </div>
+          <div class="col-16">
+            <at-select v-model="sequence" placeholder="bitte auswählen" style="width:100%;">
+              <at-option value="fibonacci">Fibonacci (1, 1, 2, 3, 5, …)</at-option>
+              <at-option value="triangular">Triangular (1, 3, 6, 10, …)</at-option>
+              <at-option value="square">Quadratzahlen (1, 2, 4, 9, …)</at-option>
+              <at-option value="pentagonal">Pentagonal (1, 5, 12, 22, …)</at-option>
+              <at-option value="listmerge">n-Listmerge (1, 3, 5, 9, 11, …)</at-option>
+            </at-select>
+          </div>
+        </div>
+      </at-modal>
+    </div>
+
+    <p style="font-family:'Inter Work'">HABIBI</p>
+
+
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/at.min.js"></script>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/fabric.min.js"></script>
+    <script src="lib/packer.growing.js"></script>
+    <script src="lib/packer.js"></script>
+    <script src="format.js"></script>
+    <script src="generator.js"></script>
+    <script src="ui.js"></script>
+  </body>
+</html>
