@@ -30,27 +30,36 @@ Number.prototype.toMm = function() {
   return this.valueOf() / scaleFactor;
 };
 
+window.onload = function() {
+  setup();
+};
+
 function setup() {
-  let size = a3;
+  let size = a3,
+      canvas = document.getElementById("format");
+
+  paper.setup(canvas);
 
   dimension = size.fitIntoView(canvasWidth, canvasHeight);
   canvasWidth = Math.min(size.computedWidth, canvasWidth);
-  canvasHeight = Math.min(size.computedHeight, canvasHeight)
+  canvasHeight = Math.min(size.computedHeight, canvasHeight);
 
-  createCanvas(canvasWidth + padding * 2, canvasHeight + padding * 2);
-  //var svg = d3.select("svg").attr("width", canvasWidth + padding * 2).attr("height", canvasHeight + padding * 2);
+  document.querySelector("#format").style.width = canvasWidth + padding * 2 + "px";
+  document.querySelector("#format").style.height = canvasHeight + padding * 2 + "px";
 
   let boundary = new Rectangle(dimension.width / 2 + padding, dimension.height / 2 + padding, dimension.width / 2, dimension.height / 2);
-  qtree = new QuadTree(boundary, 6, 1);
+  qtree = new QuadTree(boundary, 6, 1, "#format");
 
   console.log(boundary);
 
   for (let i =0; i < 100; i++) {
-    let x = randomGaussian(dimension.width / 2, dimension.width / 8),
-        y = randomGaussian(dimension.height / 2, dimension.height / 8),
+    let x = Math.floor( Math.random() * dimension.width / 2 ) + dimension.width / 8,
+        y = Math.floor( Math.random() * dimension.height / 2 ) + dimension.height / 8,
         p = new Point(x, y);
       qtree.insert(p);
   }
+
+		paper.view.draw();
 }
 
 function draw() {

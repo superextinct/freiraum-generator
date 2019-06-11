@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5 Poster</title>
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <style>
+      html, body {
+        height: 100%;
+        background: #131220;
+      }
+
+      .point {
+        fill: #000;
+        fill-opacity: 0.2;
+      }
+
+      svg {
+        position: absolute;
+        border-collapse: collapse;
+      }
+
+      #format {
+        position: absolute;
+        background-color: #fff;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      #format::after {
+          content: "";
+          display: block;
+          clear:both;
+          width: 100%;
+          height: 0;
+        }
+
+      .point--selected {
+        fill: red;
+        fill-opacity: 1;
+        stroke: red;
+        stroke-width: 5px;
+      }
+      
+      .node {
+        fill: none;
+        stroke: #000;
+        stroke-width: 2;
+        shape-rendering: crispEdges;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="format"></div>
+
+    <script src="lib/d3.min.js"></script>
+    <script src="lib/vue.min.js"></script>
+    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+    <script src="format.js"></script>
+    <script src="d3sketch.js"></script>
+  </body>
+</html>
